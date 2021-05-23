@@ -47,10 +47,6 @@ Note that:
 
  - Moustaches can't be escaped. I don't want to make it too easy.
 
- - Moustache contents are limited to `1000` characters (note - not file
-   contents), though you can change this via the `MOUSTACHE_BUFFER_SIZE`
-   define.
-
  - Relative paths are relative to the file they are used in. They are not
    necessarily relative to the primary input file (see what happened to `b/d.c`
    in the example above).

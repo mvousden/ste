@@ -5,7 +5,10 @@
 #define MAX_DEPTH 500  /* Maximum depth to accept. */
 #define MOUSTACHE_OPEN_CODE 123  /* '{', you'll need two of them. */
 #define MOUSTACHE_CLOSE_CODE 125  /* '}', you'll need two of them. */
-#define MOUSTACHE_BUFFER_SIZE 1000  /* Scream if you want to go faster! */
+
+/* Base size for the moustache buffer. The buffer itself is elastic - this is
+ * an increment to make sure we don't realloc on every character read. */
+#define MOUSTACHE_BUFFER_BASE 100
 
 /* Simple wrapper around template to handle file opening and closing. inPath
  * and outPath may be string literal. */
@@ -60,7 +63,7 @@ int template_files(char* inPath, char* outPath)
  * file at "outFile". Both character arrays must be null-terminated.
  *
  * Also accepts a character array "dir", which is the base directory for all
- * template files, and must fit with each template in MOUSTACHE_BUFFER_SIZE.
+ * template files, relative to "inFile".
  *
  * This function is recursive - so it maintains a depth-trap variable "depth",
  * which is incremented by one for each call, to ensure we don't stack smash.
@@ -84,11 +87,14 @@ int template(FILE* inFile, FILE* outFile, char* dir, unsigned depth)
 
     /* Moustache mode */
     int moustacheMode;  /* Are we in moustache mode? */
-    char moustacheBuffer[MOUSTACHE_BUFFER_SIZE];  /* Holds moustache
-                                                   * contents. (NB: Not the
-                                                   * contents of the file in
-                                                   * the moustache!) */
     int moustacheIndex;  /* How deep are we into the moustache? */
+
+    /* While in moustache mode, a buffer is needed to hold moustache
+     * contents. This buffer grows and shrinks as necessary to hold moustache
+     * contents. */
+    char* moustacheBuffer;
+    size_t moustacheBaseSize;
+    size_t moustacheCurrentSize;
 
     /* For recursion; this function calls itself to resolve nested
      * moustaches. */
@@ -112,6 +118,13 @@ int template(FILE* inFile, FILE* outFile, char* dir, unsigned depth)
     error = 0;
     previousChar = 0;
     thisChar = fgetc(inFile);  /* The first of many (hopefully). */
+
+    /* Set up the moustache buffer. */
+    moustacheBaseSize = sizeof(char*) * (MOUSTACHE_BUFFER_BASE);
+    moustacheCurrentSize = moustacheBaseSize;
+    moustacheBuffer = (char*) malloc(moustacheBaseSize);
+    for (moustacheIndex = 0; moustacheIndex < moustacheCurrentSize;
+         moustacheBuffer[moustacheIndex++] = 0);
 
     /* Read until we hit EOF in the input file. */
     while (thisChar != EOF)
@@ -147,6 +160,12 @@ int template(FILE* inFile, FILE* outFile, char* dir, unsigned depth)
             }
 
             /* Otherwise, store the character in the moustache buffer. */
+            if (moustacheIndex % moustacheCurrentSize == 0)
+            {
+                moustacheBuffer = \
+                    realloc(moustacheBuffer,
+                            moustacheBaseSize + moustacheCurrentSize);
+            }
             moustacheBuffer[moustacheIndex++] = thisChar;
         }
 
@@ -161,8 +180,9 @@ int template(FILE* inFile, FILE* outFile, char* dir, unsigned depth)
 
                 /* Clear the moustache buffer, putting the directory at the
                  * start. */
-                for (moustacheIndex = 0;
-                     moustacheIndex < MOUSTACHE_BUFFER_SIZE;
+                moustacheBuffer = realloc(moustacheBuffer, moustacheBaseSize);
+                moustacheCurrentSize = moustacheBaseSize;
+                for (moustacheIndex = 0; moustacheIndex < moustacheCurrentSize;
                      moustacheBuffer[moustacheIndex++] = 0);
                 strcpy(moustacheBuffer, dir);
                 strcat(moustacheBuffer, "/");
@@ -189,6 +209,7 @@ int template(FILE* inFile, FILE* outFile, char* dir, unsigned depth)
         thisChar = fgetc(inFile);
     }
 
+    free(moustacheBuffer);
     return 0; /* If we made it all the way here, we're pretty safe. */
 }
 
