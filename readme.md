@@ -1,0 +1,78 @@
+A Simple String-Templating Tool
+===
+
+A small moustache-inspired templating tool, ala Jinja, but for C89. Nice and
+(somewhat) portable.
+
+What does it do?
+---
+
+Loads a file and performs substitutions based on moustache (`{{` and `}}`
+presence), and writes the file somewhere else.
+
+Here's a POSIX example: lets say you have a file at `input`, with contents:
+
+```
+<SomeTag>{{./b/c.txt}}</SomeTag>
+```
+
+and another file `b/c.txt` (i.e. a file named `c.txt` in a directory named
+`b`), with contents:
+
+```
+Hello World!
+This is a multiline file
+{{./d.c}}
+```
+
+and yet another file `b/d.c`, which contains (with a newline at EOF):
+
+```
+Quack Quack jibber jibber
+```
+
+If `a.xml` is read by this templating library, it writes the following
+somewhere specified by the user:
+
+```
+<SomeTag>Hello World!
+This is a multiline file
+Quack quack jibber jibber
+</SomeTag>
+```
+
+...with no newline at EOF.
+
+Note that:
+
+ - Moustaches can't be escaped. I don't want to make it too easy.
+
+ - Moustache contents are limited to `1000` characters (note - not file
+   contents), though you can change this via the `MOUSTACHE_BUFFER_SIZE`
+   define.
+
+ - Relative paths are relative to the file they are used in. They are not
+   necessarily relative to the primary input file (see what happened to `b/d.c`
+   in the example above).
+
+Pretty simple, no?
+
+How do I use it?
+---
+
+You'll need a C89 compiler to compile this. There's a makefile, which builds an
+executable and a shared object (which can be used with the header), if that's
+your jam.
+
+If you're using the executable, the first argument must be the path to your
+input file, and the second argument must be the path to your output file.
+
+Compatibility and Language
+---
+
+C89, but you can compile this library into a shared object for use in your
+language of choice.
+
+The templating mechanism uses POSIX' basename method to resolve filenames, so
+if you're on Windows, you'll need to code this in yourself, because I have no
+idea.
