@@ -4,4 +4,4 @@
 #include <stdio.h>
 #include <stdlib.h>
 int template_files(char*, char*);
-int template(FILE*, FILE*, char*);
+int template(FILE*, FILE*, char*, unsigned);

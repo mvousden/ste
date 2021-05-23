@@ -2,8 +2,9 @@
 
 #include "template.h"
 
-#define MOUSTACHE_OPEN_CODE 123  /* '{', you'll need two of them */
-#define MOUSTACHE_CLOSE_CODE 125  /* '}', you'll need two of them */
+#define MAX_DEPTH 500  /* Maximum depth to accept. */
+#define MOUSTACHE_OPEN_CODE 123  /* '{', you'll need two of them. */
+#define MOUSTACHE_CLOSE_CODE 125  /* '}', you'll need two of them. */
 #define MOUSTACHE_BUFFER_SIZE 1000  /* Scream if you want to go faster! */
 
 /* Simple wrapper around template to handle file opening and closing. inPath
@@ -46,7 +47,7 @@ int template_files(char* inPath, char* outPath)
     dir = dirname(inPathCopy);
 
     /* Use templating engine. */
-    rc = template(inFile, outFile, dir);
+    rc = template(inFile, outFile, dir, 0);
 
     /* Cleanup. */
     free(inPathCopy);
@@ -61,6 +62,9 @@ int template_files(char* inPath, char* outPath)
  * Also accepts a character array "dir", which is the base directory for all
  * template files, and must fit with each template in MOUSTACHE_BUFFER_SIZE.
  *
+ * This function is recursive - so it maintains a depth-trap variable "depth",
+ * which is incremented by one for each call, to ensure we don't stack smash.
+ *
  * If there are no moustaches in the file at "inFile", the file is simply
  * copied to "outFile".
  *
@@ -72,7 +76,7 @@ int template_files(char* inPath, char* outPath)
  * this is exploited when recursing moustaches.
  *
  * Returns 0 if no errors occured, and errno (non-zero) otherwise. */
-int template(FILE* inFile, FILE* outFile, char* dir)
+int template(FILE* inFile, FILE* outFile, char* dir, unsigned depth)
 {
     /* Characters, read from inFile. */
     int thisChar;
@@ -93,6 +97,14 @@ int template(FILE* inFile, FILE* outFile, char* dir)
 
     /* Reporting (holds errno values) */
     int error;
+
+    /* Check whether we've exceeded the permitted depth. */
+    if (depth > MAX_DEPTH)
+    {
+        fprintf(stderr, "Maximum templating depth MAX_DEPTH exceeded! "
+                        "Output is unreliable!\n");
+        return 1;
+    }
 
     /* Initialisation */
     moustacheIndex = 0;
@@ -129,7 +141,7 @@ int template(FILE* inFile, FILE* outFile, char* dir)
                 middleDir = dirname(moustacheBuffer);
 
                 /* Recurse, propagating any errors. */
-                error = template(middleFile, outFile, middleDir);
+                error = template(middleFile, outFile, middleDir, depth + 1);
                 fclose(middleFile);
                 if (error != 0) return error;
             }
@@ -180,6 +192,7 @@ int template(FILE* inFile, FILE* outFile, char* dir)
     return 0; /* If we made it all the way here, we're pretty safe. */
 }
 
+#undef MAX_DEPTH
 #undef MOUSTACHE_OPEN_CODE
 #undef MOUSTACHE_CLOSE_CODE
 #undef MOUSTACHE_BUFFER_SIZE
