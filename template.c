@@ -2,7 +2,7 @@
 
 #include "template.h"
 
-#define MAX_DEPTH 500  /* Maximum depth to accept. */
+#define MAX_DEPTH 50000  /* Maximum depth to accept. */
 #define MOUSTACHE_OPEN_CODE 123  /* '{', you'll need two of them. */
 #define MOUSTACHE_CLOSE_CODE 125  /* '}', you'll need two of them. */
 
@@ -46,6 +46,12 @@ int template_files(char* inPath, char* outPath)
      * literal, we'll segmentation fault here, so copy the buffer somewhere we
      * can modify. POSIX! */
     inPathCopy = (char*) malloc(sizeof(char*) * (strlen(inPath) + 1));
+    if (inPathCopy == NULL)
+    {
+        fprintf(stderr, "Error allocating memory for the input path '%s'.",
+                inPath);
+        return 1;
+    }
     strcpy(inPathCopy, inPath);
     dir = dirname(inPathCopy);
 
@@ -122,7 +128,12 @@ int template(FILE* inFile, FILE* outFile, char* dir, unsigned depth)
     /* Set up the moustache buffer. */
     moustacheBaseSize = sizeof(char*) * (MOUSTACHE_BUFFER_BASE);
     moustacheCurrentSize = moustacheBaseSize;
-    moustacheBuffer = (char*) malloc(moustacheBaseSize);
+    moustacheBuffer = (char*) malloc(strlen(dir) + 2 + moustacheBaseSize);
+    if (moustacheBuffer == NULL)
+    {
+        fprintf(stderr, "Error allocating memory for a moustache. Exiting.\n");
+        return 1;
+    }
     for (moustacheIndex = 0; moustacheIndex < moustacheCurrentSize;
          moustacheBuffer[moustacheIndex++] = 0);
 
@@ -165,6 +176,12 @@ int template(FILE* inFile, FILE* outFile, char* dir, unsigned depth)
                 moustacheBuffer = \
                     realloc(moustacheBuffer,
                             moustacheBaseSize + moustacheCurrentSize);
+                if (moustacheBuffer == NULL)
+                {
+                    fprintf(stderr, "Error expanding the moustache buffer. "
+                                    "Exiting.\n");
+                    return 1;
+                }
             }
             moustacheBuffer[moustacheIndex++] = thisChar;
         }
@@ -179,8 +196,15 @@ int template(FILE* inFile, FILE* outFile, char* dir, unsigned depth)
                 moustacheMode = 1;
 
                 /* Clear the moustache buffer, putting the directory at the
-                 * start. */
-                moustacheBuffer = realloc(moustacheBuffer, moustacheBaseSize);
+                 * start. Also resize the moustache buffer appropriately. */
+                moustacheBuffer = realloc(moustacheBuffer,
+                                          strlen(dir) + 2 + moustacheBaseSize);
+                if (moustacheBuffer == NULL)
+                {
+                    fprintf(stderr, "Error compressing the moustache buffer. "
+                                    "Exiting.\n");
+                    return 1;
+                }
                 moustacheCurrentSize = moustacheBaseSize;
                 for (moustacheIndex = 0; moustacheIndex < moustacheCurrentSize;
                      moustacheBuffer[moustacheIndex++] = 0);

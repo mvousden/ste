@@ -51,6 +51,9 @@ Note that:
    necessarily relative to the primary input file (see what happened to `b/d.c`
    in the example above).
 
+ - Errors are printed to stderr, and a non-zero value is returned by the
+   templater if an error is enountered.
+
 Pretty simple, no?
 
 How do I use it?
@@ -72,3 +75,21 @@ language of choice.
 The templating mechanism uses POSIX' basename method to resolve filenames, so
 if you're on Windows, you'll need to code this in yourself, because I have no
 idea.
+
+
+Gotcha: Nesting and Recursion
+---
+
+If you've got a particularly nasty case that has many degrees of nesting, you
+may fall foul of the OS' limit on the number of file descriptors a process can
+open at a time. The example in `examples/infinite` demonstrates this, by
+printing the following to `stderr`:
+
+```
+Error opening nested file 'examples/infinite/input': Too many open files.
+```
+
+To view the limit in most linuxes, `ulimit -n` is your friend.
+
+Don't forget to remove the large file created by this example after you've
+finished!
