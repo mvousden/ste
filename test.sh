@@ -15,10 +15,12 @@ mkdir --parents ${TEST_OUTPUT_DIR}
 for EXAMPLE_DIR in examples/*; do
     TEST_NAME="$(basename "${EXAMPLE_DIR}")"
     IN_FILE="${EXAMPLE_DIR}/input"
+    VALUE_FILE="${EXAMPLE_DIR}/values"
     OUT_FILE="${TEST_OUTPUT_DIR}/${TEST_NAME}"
     STDOUT_FILE="${TEST_OUTPUT_DIR}/${TEST_NAME}_stdout.txt"
     STDERR_FILE="${TEST_OUTPUT_DIR}/${TEST_NAME}_stderr.txt"
-    ./templater "${IN_FILE}" "${OUT_FILE}" \
+    VALUES="$(cat "${VALUE_FILE}" 2> /dev/null)"
+    ./templater "${IN_FILE}" "${OUT_FILE}" ${VALUES} \
         > "${STDOUT_FILE}" 2> "${STDERR_FILE}"
     RC=$?
 

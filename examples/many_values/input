@@ -1,0 +1,2 @@
+This example demonstrates how many values can be used.
+{{v:one}} {{v:two}} {{v:three}} {{v:four}}!
