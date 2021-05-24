@@ -1,1 +1,1 @@
-<SomeTag>{{./b/c.txt}}</SomeTag>
+<SomeTag>{{f:./b/c.txt}}</SomeTag>
