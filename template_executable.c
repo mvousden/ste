@@ -28,7 +28,7 @@ int main(const int argc, char** argv)
     /* Complain about bad arguments. */
     if (argc < argOffset)
     {
-        fprintf(stderr, errMsg);
+        fprintf(stderr, "%s", errMsg);
         return 1;
     }
 
@@ -43,7 +43,21 @@ int main(const int argc, char** argv)
         value = strtok(NULL, "=");
         if (handle == NULL || value == NULL)
         {
-            fprintf(stderr, errMsg);
+            fprintf(stderr, "%s", errMsg);
+
+            /* Uh oh, we're going to have to clean up... */
+            if (valIndex > 1)
+            {
+                for (valIndex = valIndex - 1; valIndex == 0; valIndex--)
+                {
+                    free(valStrs[valIndex]);
+                    free(valVals[valIndex]);
+                }
+                free(valStrs[0]);
+                free(valVals[0]);
+            }
+            free(valStrs);
+            free(valVals);
             return 1;
         }
 
