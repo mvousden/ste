@@ -1,3 +1,4 @@
+#include <bsd/string.h>
 #include <errno.h>
 #include <libgen.h>  /* POSIX */
 #include <string.h>

@@ -18,6 +18,7 @@ int template_files(const char* inPath, const char* outPath)
     FILE* outFile;
 
     char* inPathCopy;  /* For directory extraction */
+    size_t inPathLength;
     char* dir;  /* Directory will go here */
     int rc;  /* Returncode */
 
@@ -44,14 +45,15 @@ int template_files(const char* inPath, const char* outPath)
     /* Grab the directory containing the input file. If inPath is a string
      * literal, we'll segmentation fault here, so copy the buffer somewhere we
      * can modify. POSIX! */
-    inPathCopy = (char*) malloc(sizeof(char*) * (strlen(inPath) + 1));
+    inPathLength = strlen(inPath) + 1;
+    inPathCopy = (char*) malloc(sizeof(char) * inPathLength);
     if (inPathCopy == NULL)
     {
         fprintf(stderr, "Error allocating memory for the input path '%s'.",
                 inPath);
         return 1;
     }
-    strcpy(inPathCopy, inPath);
+    strlcpy(inPathCopy, inPath, inPathLength);
     dir = dirname(inPathCopy);
 
     /* Use templating engine. */
@@ -102,14 +104,10 @@ int template(FILE* inFile, FILE* outFile, const char* dir)
      * moustaches. */
     FILE* middleFile;
     char* middleDir;
-
-    /* Reporting (holds errno values) */
     int error;
 
     /* Initialisation */
-    moustacheIndex = 0;
     moustacheMode = 0;
-    error = 0;
     previousChars[0] = 0;
     previousChars[1] = 0;
     previousChars[2] = 0;
@@ -199,8 +197,8 @@ int template(FILE* inFile, FILE* outFile, const char* dir)
                 moustacheCurrentSize = moustacheBaseSize;
                 for (moustacheIndex = 0; moustacheIndex < moustacheCurrentSize;
                      moustacheBuffer[moustacheIndex++] = 0);
-                strcpy(moustacheBuffer, dir);
-                strcat(moustacheBuffer, "/");
+                strlcpy(moustacheBuffer, dir, moustacheCurrentSize);
+                strlcat(moustacheBuffer, "/", moustacheCurrentSize);
                 moustacheIndex = strlen(dir) + 1;
 
                 /* If so, remove the previous three characters ('{f:') by

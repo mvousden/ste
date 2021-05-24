@@ -1,12 +1,13 @@
 CFLAGS = -O3 -Wall -Wextra -pedantic -std=c89
+LFLAGS = -lbsd
 
 all: templater templater.so
 
 templater: template_executable.c template.c template.h
-	${CC} ${CFLAGS} $(filter %.c, $^) -o $@
+	${CC} ${CFLAGS} ${LFLAGS} $(filter %.c, $^) -o $@
 
 templater.so: template.c template.h
-	${CC} ${CFLAGS} -shared -fPIC -o $@ $(filter %.c, $^)
+	${CC} ${CFLAGS} ${LFLAGS} -shared -fPIC -o $@ $(filter %.c, $^)
 
 clean:
 	rm --force templater templater.so
