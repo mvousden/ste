@@ -7,8 +7,8 @@ A small moustache-inspired templating tool, ala Jinja, but for C89. Nice and
 What does it do?
 ---
 
-Loads a file and performs substitutions based on moustache (`{{` and `}}`
-presence), and writes the file somewhere else.
+Loads a (series of) ASCII files, and performs substitutions based on moustache
+(`{{` and `}}` presence), and writes the file somewhere else.
 
 Here's a POSIX example: lets say you have a file at `input`, with contents:
 
