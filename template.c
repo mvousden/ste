@@ -1,5 +1,3 @@
-/* There's very little in here that protects the user, so be careful! */
-
 #include "template.h"
 
 #define MOUSTACHE_OPEN_CODE 123  /* '{', you'll need two of them. */
