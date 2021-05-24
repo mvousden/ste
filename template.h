@@ -3,5 +3,5 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-int template_files(char*, char*);
-int template(FILE*, FILE*, char*);
+int template_files(const char*, const char*);
+int template(FILE*, FILE*, const char*);

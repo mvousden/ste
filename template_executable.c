@@ -2,7 +2,7 @@
 
 /* e.g. ./template "input_file" "output_directory/output_file" */
 
-int main(int argc, char** argv)
+int main(const int argc, const char** argv)
 {
     /* Complain about bad arguments. */
     if (argc != 3)

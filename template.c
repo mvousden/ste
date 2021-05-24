@@ -11,7 +11,7 @@
 
 /* Simple wrapper around template to handle file opening and closing. inPath
  * and outPath may be string literal. */
-int template_files(char* inPath, char* outPath)
+int template_files(const char* inPath, const char* outPath)
 {
     /* File objects go here, one for each path provided. */
     FILE* inFile;
@@ -81,7 +81,7 @@ int template_files(char* inPath, char* outPath)
  * this is exploited when recursing moustaches.
  *
  * Returns 0 if no errors occured, and errno (non-zero) otherwise. */
-int template(FILE* inFile, FILE* outFile, char* dir)
+int template(FILE* inFile, FILE* outFile, const char* dir)
 {
     /* Characters, read from inFile. */
     int thisChar;
@@ -95,7 +95,7 @@ int template(FILE* inFile, FILE* outFile, char* dir)
      * contents. This buffer grows and shrinks as necessary to hold moustache
      * contents. */
     char* moustacheBuffer;
-    size_t moustacheBaseSize;
+    const size_t moustacheBaseSize = sizeof(char*) * (MOUSTACHE_BUFFER_BASE);
     size_t moustacheCurrentSize;
 
     /* For recursion; this function calls itself to resolve nested
@@ -116,7 +116,6 @@ int template(FILE* inFile, FILE* outFile, char* dir)
     thisChar = fgetc(inFile);  /* The first of many (hopefully). */
 
     /* Set up the moustache buffer. */
-    moustacheBaseSize = sizeof(char*) * (MOUSTACHE_BUFFER_BASE);
     moustacheCurrentSize = moustacheBaseSize;
     moustacheBuffer = (char*) malloc(strlen(dir) + 2 + moustacheBaseSize);
     if (moustacheBuffer == NULL)
