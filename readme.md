@@ -28,16 +28,21 @@ This is a multiline file
 and yet another file `b/d.c`, which contains (with a newline at EOF):
 
 ```
-Quack Quack jibber jibber
+Quack {{v:anothernoise}}
 ```
 
-If `a.xml` is read by this templating library, it writes the following
-somewhere specified by the user:
+If `input` is read by this templating library, by running:
+
+```
+./templater input output anothernoise=quack
+```
+
+it writes the following to `output`:
 
 ```
 <SomeTag>Hello World!
 This is a multiline file
-Quack quack jibber jibber
+Quack quack
 </SomeTag>
 ```
 
@@ -46,7 +51,10 @@ Quack quack jibber jibber
 Note that:
 
  - The `f:` prefix in the moustache tells the templater that this moustache
-   refers to a file.
+   refers to a file somewhere, which can be opened and read.
+
+ - The `v:` prefix in the moustache tells the templater that this moustache
+   refers to a value passed to it by the user.
 
  - Moustaches can't be escaped, but if your moustache doesn't have a code
    (e.g. `f:`), they'll be ignored anyway.
@@ -68,7 +76,8 @@ executable and a shared object (which can be used with the header), if that's
 your jam.
 
 If you're using the executable, the first argument must be the path to your
-input file, and the second argument must be the path to your output file.
+input file, the second argument must be the path to your output file, and
+arguments after this must be `handle=value` for each value you want to define.
 
 Compatibility and Language
 ---
@@ -76,10 +85,8 @@ Compatibility and Language
 C89, but you can compile this library into a shared object for use in your
 language of choice.
 
-The templating mechanism uses POSIX' basename method to resolve filenames, so
-if you're on Windows, you'll need to code this in yourself, because I have no
-idea.
-
+Note that this uses POSIX' basename method to resolve filenames, so if you're
+on Windows, you'll need to code this in yourself, because I have no idea.
 
 Gotcha: Nesting and Recursion
 ---

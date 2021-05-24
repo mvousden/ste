@@ -1,1 +1,1 @@
-Quack Quack jibber jibber
+Quack {{v:anothernoise}}
