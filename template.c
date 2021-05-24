@@ -4,6 +4,8 @@
 
 #define MOUSTACHE_OPEN_CODE 123  /* '{', you'll need two of them. */
 #define MOUSTACHE_CLOSE_CODE 125  /* '}', you'll need two of them. */
+#define FILE_CODE 102  /* 'f' */
+#define CODE_DELIMITER 58  /* ':', used to delimit all input codes. */
 
 /* Base size for the moustache buffer. The buffer itself is elastic - this is
  * an increment to make sure we don't realloc on every character read. */
@@ -85,7 +87,7 @@ int template(FILE* inFile, FILE* outFile, char* dir)
 {
     /* Characters, read from inFile. */
     int thisChar;
-    int previousChar;
+    int previousChars[3];  /* It's a queue. */
 
     /* Moustache mode */
     int moustacheMode;  /* Are we in moustache mode? */
@@ -110,7 +112,9 @@ int template(FILE* inFile, FILE* outFile, char* dir)
     moustacheIndex = 0;
     moustacheMode = 0;
     error = 0;
-    previousChar = 0;
+    previousChars[0] = 0;
+    previousChars[1] = 0;
+    previousChars[2] = 0;
     thisChar = fgetc(inFile);  /* The first of many (hopefully). */
 
     /* Set up the moustache buffer. */
@@ -133,7 +137,7 @@ int template(FILE* inFile, FILE* outFile, char* dir)
         {
             /* Has the moustache ended? */
             if (thisChar == MOUSTACHE_CLOSE_CODE &&
-                previousChar == MOUSTACHE_CLOSE_CODE)
+                previousChars[2] == MOUSTACHE_CLOSE_CODE)
             {
                 /* If so, exit moustache mode, and remove the stray curly brace
                  * from the buffer. */
@@ -176,9 +180,11 @@ int template(FILE* inFile, FILE* outFile, char* dir)
 
         else
         {
-            /* Has a moustache started? */
-            if (thisChar == MOUSTACHE_OPEN_CODE &&
-                previousChar == MOUSTACHE_OPEN_CODE)
+            /* Has a file moustache started? */
+            if (thisChar == CODE_DELIMITER &&
+                previousChars[2] == FILE_CODE &&
+                previousChars[1] == MOUSTACHE_OPEN_CODE &&
+                previousChars[0] == MOUSTACHE_OPEN_CODE)
             {
                 /* Enter moustache mode. */
                 moustacheMode = 1;
@@ -200,9 +206,9 @@ int template(FILE* inFile, FILE* outFile, char* dir)
                 strcat(moustacheBuffer, "/");
                 moustacheIndex = strlen(dir) + 1;
 
-                /* If so, remove the previous curly brace by moving the write
-                 * pointer backwards by one. */
-                fseek(outFile, -1, SEEK_CUR);
+                /* If so, remove the previous three characters ('{f:') by
+                 * moving the write pointer backwards by three. */
+                fseek(outFile, -3, SEEK_CUR);
             }
 
             /* Otherwise, write the character to output file. */
@@ -217,7 +223,9 @@ int template(FILE* inFile, FILE* outFile, char* dir)
         }
 
         /* Next loop setup. */
-        previousChar = thisChar;
+        previousChars[0] = previousChars[1];
+        previousChars[1] = previousChars[2];
+        previousChars[2] = thisChar;
         thisChar = fgetc(inFile);
     }
 
@@ -227,4 +235,6 @@ int template(FILE* inFile, FILE* outFile, char* dir)
 
 #undef MOUSTACHE_OPEN_CODE
 #undef MOUSTACHE_CLOSE_CODE
+#undef FILE_CODE
+#undef CODE_DELIMITER
 #undef MOUSTACHE_BUFFER_SIZE

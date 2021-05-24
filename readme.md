@@ -13,7 +13,7 @@ Loads a (series of) ASCII files, and performs substitutions based on moustache
 Here's a POSIX example: lets say you have a file at `input`, with contents:
 
 ```
-<SomeTag>{{./b/c.txt}}</SomeTag>
+<SomeTag>{{f:./b/c.txt}}</SomeTag>
 ```
 
 and another file `b/c.txt` (i.e. a file named `c.txt` in a directory named
@@ -22,7 +22,7 @@ and another file `b/c.txt` (i.e. a file named `c.txt` in a directory named
 ```
 Hello World!
 This is a multiline file
-{{./d.c}}
+{{f:./d.c}}
 ```
 
 and yet another file `b/d.c`, which contains (with a newline at EOF):
@@ -45,7 +45,11 @@ Quack quack jibber jibber
 
 Note that:
 
- - Moustaches can't be escaped. I don't want to make it too easy.
+ - The `f:` prefix in the moustache tells the templater that this moustache
+   refers to a file.
+
+ - Moustaches can't be escaped, but if your moustache doesn't have a code
+   (e.g. `f:`), they'll be ignored anyway.
 
  - Relative paths are relative to the file they are used in. They are not
    necessarily relative to the primary input file (see what happened to `b/d.c`

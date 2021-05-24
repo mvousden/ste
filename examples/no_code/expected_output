@@ -1,0 +1,2 @@
+This test shows what happens if you don't use a code in your moustache.
+{{./sub1}}
