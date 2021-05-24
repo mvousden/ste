@@ -89,7 +89,7 @@ int template(FILE* inFile, FILE* outFile, const char* dir)
 
     /* Moustache mode */
     int moustacheMode;  /* Are we in moustache mode? */
-    int moustacheIndex;  /* How deep are we into the moustache? */
+    size_t moustacheIndex;  /* How deep are we into the moustache? */
 
     /* While in moustache mode, a buffer is needed to hold moustache
      * contents. This buffer grows and shrinks as necessary to hold moustache

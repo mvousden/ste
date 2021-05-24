@@ -1,4 +1,4 @@
-CFLAGS = -O3 -Wall -pedantic -std=c89
+CFLAGS = -O3 -Wall -Wextra -pedantic -std=c89
 
 all: templater templater.so
 
