@@ -94,6 +94,9 @@ on Windows, you'll need to code this in yourself, because I have no idea.
 Also note that this package uses `strlcat` and `strlcpy`, which are defined in
 `libbsd`.
 
+The included quick-and-dirty test script uses `valgrind`'s `memcheck` tool, so
+you'll probably want to install that if you want to run the tests.
+
 Gotcha: Nesting and Recursion
 ---
 

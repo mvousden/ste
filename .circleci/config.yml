@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout
       - run: "sudo apt update"
-      - run: "sudo apt install libbsd-dev"
+      - run: "sudo apt install libbsd-dev valgrind"
       - run: "make"
       - run: ./test.sh
       - store_artifacts:
