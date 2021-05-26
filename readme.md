@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)]
+
 A Simple String-Templating Tool
 ===
 
