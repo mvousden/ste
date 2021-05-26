@@ -79,6 +79,19 @@ for EXAMPLE_DIR in examples/*; do
         OUTPUT_RC=1
         continue
     fi
+
+    # Does the example pass under memcheck? (regardless of xfail)
+    STDOUT_MEMCHECK_FILE="${TEST_OUTPUT_DIR}/${TEST_NAME}_memcheck_stdout.txt"
+    STDERR_MEMCHECK_FILE="${TEST_OUTPUT_DIR}/${TEST_NAME}_memcheck_stderr.txt"
+    valgrind --leak-check=full --error-exitcode=1 \
+        ./templater "${IN_FILE}" "${OUT_FILE}" ${VALUES} \
+            > "${STDOUT_MEMCHECK_FILE}" 2> "${STDERR_MEMCHECK_FILE}"
+    if [ $? -ne 0 ]; then
+        echo "Memcheck found leaks or errors while running the '${TEST_NAME}'" \
+           "test." > /dev/stderr
+        OUTPUT_RC=1
+        continue
+    fi
 done
 
 if [ ${OUTPUT_RC} -eq 0 ]; then
