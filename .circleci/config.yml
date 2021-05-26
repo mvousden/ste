@@ -5,6 +5,8 @@ jobs:
       image: ubuntu-2004:202104-01
     steps:
       - checkout
+      - run: "sudo apt update"
+      - run: "sudo apt install libbsd-dev"
       - run: "make"
       - run: ./test.sh
       - store_artifacts:

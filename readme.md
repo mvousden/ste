@@ -90,6 +90,9 @@ language of choice.
 Note that this uses POSIX' basename method to resolve filenames, so if you're
 on Windows, you'll need to code this in yourself, because I have no idea.
 
+Also note that this package uses `strlcat` and `strlcpy`, which are defined in
+`libbsd`.
+
 Gotcha: Nesting and Recursion
 ---
 
