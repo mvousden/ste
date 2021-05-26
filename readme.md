@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/mvousden/templater.svg?style=svg)](https://app.circleci.com/pipelines/github/mvousden/templater)
+[![CircleCI](https://circleci.com/gh/mvousden/templater.svg?style=shield)](https://app.circleci.com/pipelines/github/mvousden/templater)
 ![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)
 
 A Simple String-Templating Tool
