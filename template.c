@@ -52,6 +52,8 @@ int template_files(const char* inPath, const char* outPath,
     {
         fprintf(stderr, "Error allocating memory for the input path '%s'.",
                 inPath);
+        fclose(inFile);
+        fclose(outFile)
         return 1;
     }
     strlcpy(inPathCopy, inPath, inPathLength);
@@ -98,6 +100,8 @@ int template_files(const char* inPath, const char* outPath,
 int template(FILE* inFile, FILE* outFile, const char* dir,
              char** valStrs, char** valVals, const unsigned numVals)
 {
+    int rc;
+
     /* Characters, read from inFile. */
     int thisChar;
     int previousChars[3];  /* It's a queue. */
@@ -121,9 +125,9 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
      * moustaches. */
     FILE* middleFile;
     char* middleDir;
-    int error;
 
     /* Initialisation */
+    rc = 0;
     moustacheMode = 0;
     previousChars[0] = 0;
     previousChars[1] = 0;
@@ -165,17 +169,18 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                         fprintf(stderr,
                                 "Error opening nested file '%s': %s.\n",
                                 moustacheBuffer, strerror(errno));
-                        return errno;
+                        rc = errno;
+                        break;
                     }
 
                     /* Grab the directory. POSIX! */
                     middleDir = dirname(moustacheBuffer);
 
                     /* Recurse, propagating any errors. */
-                    error = template(middleFile, outFile, middleDir,
-                                     valStrs, valVals, numVals);
+                    rc = template(middleFile, outFile, middleDir,
+                                  valStrs, valVals, numVals);
                     fclose(middleFile);
-                    if (error != 0) return error;
+                    if (rc != 0) break;
                 }
 
                 /* Handle a value moustache. */
@@ -198,7 +203,8 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                     {
                         fprintf(stderr, "No value defined with handle '%s'. "
                                 "Exiting.\n", moustacheBuffer);
-                        return 1;
+                        rc = 1;
+                        break;
                     }
 
                     /* Place the mapped value into the output file. */
@@ -214,7 +220,8 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                 {
                     fprintf(stderr, "Invalid moustache code '%c'. Exiting.\n",
                             moustacheMode);
-                    return 1;
+                    rc = 1;
+                    break;
                 }
 
                 /* Exit moustache mode. */
@@ -231,7 +238,8 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                 {
                     fprintf(stderr, "Error expanding the moustache buffer. "
                             "Exiting.\n");
-                    return 1;
+                    rc = 1;
+                    break;
                 }
             }
             moustacheBuffer[moustacheIndex++] = thisChar;
@@ -256,7 +264,8 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                 {
                     fprintf(stderr, "Error compressing the moustache buffer. "
                                     "Exiting.\n");
-                    return 1;
+                    rc = 1;
+                    break;
                 }
                 moustacheCurrentSize = moustacheBaseSize;
                 for (moustacheIndex = 0; moustacheIndex < moustacheCurrentSize;
@@ -286,7 +295,8 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                 {
                     fprintf(stderr, "Error compressing the moustache buffer. "
                                     "Exiting.\n");
-                    return 1;
+                    rc = 1;
+                    break;
                 }
                 moustacheCurrentSize = moustacheBaseSize;
                 moustacheIndex = moustacheCurrentSize;
@@ -308,7 +318,8 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                 if (fputc(thisChar, outFile) == EOF)
                 {
                     fprintf(stderr, "Error writing to output file.\n");
-                    return errno;
+                    rc = errno;
+                    break;
                 }
                 fflush(outFile);
             }
@@ -322,7 +333,7 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
     }
 
     free(moustacheBuffer);
-    return 0; /* If we made it all the way here, we're pretty safe. */
+    return rc;
 }
 
 #undef MOUSTACHE_OPEN_CODE

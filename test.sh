@@ -83,10 +83,10 @@ for EXAMPLE_DIR in examples/*; do
     # Does the example pass under memcheck? (regardless of xfail)
     STDOUT_MEMCHECK_FILE="${TEST_OUTPUT_DIR}/${TEST_NAME}_memcheck_stdout.txt"
     STDERR_MEMCHECK_FILE="${TEST_OUTPUT_DIR}/${TEST_NAME}_memcheck_stderr.txt"
-    valgrind --leak-check=full --error-exitcode=1 \
+    valgrind --leak-check=full --error-exitcode=255 \
         ./templater "${IN_FILE}" "${OUT_FILE}" ${VALUES} \
             > "${STDOUT_MEMCHECK_FILE}" 2> "${STDERR_MEMCHECK_FILE}"
-    if [ $? -ne 0 ]; then
+    if [ $? -eq 255 ]; then
         echo "Memcheck found leaks or errors while running the '${TEST_NAME}'" \
            "test." > /dev/stderr
         OUTPUT_RC=1
