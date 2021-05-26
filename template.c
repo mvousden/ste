@@ -53,7 +53,7 @@ int template_files(const char* inPath, const char* outPath,
         fprintf(stderr, "Error allocating memory for the input path '%s'.",
                 inPath);
         fclose(inFile);
-        fclose(outFile)
+        fclose(outFile);
         return 1;
     }
     strlcpy(inPathCopy, inPath, inPathLength);
