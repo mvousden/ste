@@ -1,4 +1,4 @@
-This test checks how the templater deals with newline characters and carriage
+This test checks how ste deals with newline characters and carriage
 returns.
 This file has a newline at the end.
 This file has a carriage return and a newline at the end.
