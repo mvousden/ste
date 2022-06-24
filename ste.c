@@ -1,4 +1,4 @@
-#include "template.h"
+#include "ste.h"
 
 #define MOUSTACHE_OPEN_CODE 123  /* '{', you'll need two of them. */
 #define MOUSTACHE_CLOSE_CODE 125  /* '}', you'll need two of them. */
