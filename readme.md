@@ -1,5 +1,5 @@
 [![CircleCI](https://circleci.com/gh/mvousden/ste.svg?style=shield)](https://app.circleci.com/pipelines/github/mvousden/ste)
-![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)
+![License](https://img.shields.io/badge/License-BSD%202--Clause-brightgreen.svg)
 
 A Simple Templating Engine
 ===
