@@ -1,10 +1,10 @@
 #!/bin/sh
 
-# A simple script to run the templater against each example, and to compare
-# outputs. Is quick and dirty, which is glorious.
+# A simple script to run ste against each example, and to compare outputs. Is
+# quick and dirty, which is glorious.
 #
-# Assumes that templater is in the current working directory, and that examples
-# are each in their own directory under `examples`.
+# Assumes that ste is in the current working directory, and that examples are
+# each in their own directory under `examples`.
 
 OUTPUT_RC=0
 TEST_OUTPUT_DIR="test_outputs"
@@ -20,7 +20,7 @@ for EXAMPLE_DIR in examples/*; do
     STDOUT_FILE="${TEST_OUTPUT_DIR}/${TEST_NAME}_stdout.txt"
     STDERR_FILE="${TEST_OUTPUT_DIR}/${TEST_NAME}_stderr.txt"
     VALUES="$(cat "${VALUE_FILE}" 2> /dev/null)"
-    ./templater "${IN_FILE}" "${OUT_FILE}" ${VALUES} \
+    ./ste "${IN_FILE}" "${OUT_FILE}" ${VALUES} \
         > "${STDOUT_FILE}" 2> "${STDERR_FILE}"
     RC=$?
 
@@ -39,17 +39,17 @@ for EXAMPLE_DIR in examples/*; do
         continue
     fi
 
-    # Did the templater crash?
+    # Did ste crash?
     if [ ${RC} -ne 0 -a ${XFAIL} -eq 0 ]; then
-        echo "The templater failed with exit code ${RC} while running the" \
+        echo "ste failed with exit code ${RC} while running the" \
             "'${TEST_NAME}' test." > /dev/stderr
         OUTPUT_RC=1
         continue
     fi
 
-    # Did it produce an output file?
+    # Did ste produce an output file?
     if [ ! -e "${OUT_FILE}" -a ${XFAIL} -eq 0 ]; then
-        echo "The templater did not produce an output file from the" \
+        echo "ste did not produce an output file from the" \
             "'${TEST_NAME}' test." > /dev/stderr
         OUTPUT_RC=1
         continue
@@ -84,7 +84,7 @@ for EXAMPLE_DIR in examples/*; do
     STDOUT_MEMCHECK_FILE="${TEST_OUTPUT_DIR}/${TEST_NAME}_memcheck_stdout.txt"
     STDERR_MEMCHECK_FILE="${TEST_OUTPUT_DIR}/${TEST_NAME}_memcheck_stderr.txt"
     valgrind --leak-check=full --error-exitcode=255 \
-        ./templater "${IN_FILE}" "${OUT_FILE}" ${VALUES} \
+        ./ste "${IN_FILE}" "${OUT_FILE}" ${VALUES} \
             > "${STDOUT_MEMCHECK_FILE}" 2> "${STDERR_MEMCHECK_FILE}"
     if [ $? -eq 255 ]; then
         echo "Memcheck found leaks or errors while running the '${TEST_NAME}'" \

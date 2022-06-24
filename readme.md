@@ -37,7 +37,7 @@ Quack {{v:anothernoise}}
 If `input` is read by this templating library, by running:
 
 ```
-./templater input output anothernoise=quack
+./ste input output anothernoise=quack
 ```
 
 it writes the following to `output`:
@@ -53,11 +53,11 @@ Quack quack
 
 Note that:
 
- - The `f:` prefix in the moustache tells the templater that this moustache
-   refers to a file somewhere, which can be opened and read.
+ - The `f:` prefix in the moustache tells ste that this moustache refers to a
+   file somewhere, which can be opened and read.
 
- - The `v:` prefix in the moustache tells the templater that this moustache
-   refers to a value passed to it by the user.
+ - The `v:` prefix in the moustache tells ste that this moustache refers to a
+   value passed to it by the user.
 
  - Moustaches can't be escaped, but if your moustache doesn't have a code
    (e.g. `f:`), they'll be ignored anyway.
@@ -66,8 +66,8 @@ Note that:
    necessarily relative to the primary input file (see what happened to `b/d.c`
    in the example above).
 
- - Errors are printed to stderr, and a non-zero value is returned by the
-   templater if an error is enountered.
+ - Errors are printed to stderr, and a non-zero value is returned by ste if an
+   error is encountered.
 
 Pretty simple, no?
 

@@ -1,15 +1,15 @@
 CFLAGS = -O3 -Wall -Wextra -pedantic -std=c89
 LFLAGS = -lbsd
 
-all: templater templater.so
+all: ste ste.so
 
-templater: template_executable.c template.c template.h
+ste: ste_executable.c ste.c ste.h
 	${CC} ${CFLAGS} $(filter %.c, $^) -o $@ ${LFLAGS}
 
-templater.so: template.c template.h
+ste.so: ste.c ste.h
 	${CC} ${CFLAGS} -shared -fPIC -o $@ $(filter %.c, $^) ${LFLAGS}
 
 clean:
-	rm --force templater templater.so
+	rm --force ste ste.so
 
 .PHONY: all clean
