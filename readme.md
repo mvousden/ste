@@ -1,7 +1,7 @@
-[![CircleCI](https://circleci.com/gh/mvousden/templater.svg?style=shield)](https://app.circleci.com/pipelines/github/mvousden/templater)
+[![CircleCI](https://circleci.com/gh/mvousden/ste.svg?style=shield)](https://app.circleci.com/pipelines/github/mvousden/ste)
 ![License](https://img.shields.io/badge/License-BSD%202--Clause-orange.svg)
 
-A Simple String-Templating Tool
+A Simple Templating Engine
 ===
 
 A small moustache-inspired templating tool, ala Jinja, but for C89. Nice and
