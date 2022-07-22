@@ -79,5 +79,6 @@ int main()
         }
         free(destination);
     }
+    if (!failCount) printf("All tests passed.\n");
     return failCount;
 }
