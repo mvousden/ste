@@ -1,8 +1,10 @@
 #include "ste.h"
+#include "versioning.h"
 
 #define MOUSTACHE_OPEN_CODE 123  /* '{', you'll need two of them. */
 #define MOUSTACHE_CLOSE_CODE 125  /* '}', you'll need two of them. */
 #define FILE_CODE 102  /* 'f' */
+#define INFO_CODE 105  /* 'i' */
 #define VALUE_CODE 118  /* 'v' */
 #define CODE_DELIMITER 58  /* ':', used to delimit all input codes. */
 
@@ -213,6 +215,12 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                     fflush(outFile);
                 }
 
+                /* Handle an info moustache. */
+                else if (moustacheMode == INFO_CODE)
+                {
+                    fprintf(outFile, "%s", STE_VER);
+                }
+
                 /* We can't actually get here, because a moustache with an
                  * invalid code will just get ignored, but we'll be safe
                  * anyway. */
@@ -312,6 +320,20 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                 fseek(outFile, -2, SEEK_CUR);
             }
 
+            /* Has an info moustache started? */
+            if (thisChar == CODE_DELIMITER &&
+                previousChars[2] == INFO_CODE &&
+                previousChars[1] == MOUSTACHE_OPEN_CODE &&
+                previousChars[0] == MOUSTACHE_OPEN_CODE)
+            {
+                /* Enter moustache mode. */
+                moustacheMode = INFO_CODE;
+
+                /* Remove the previous three characters ('i:') by moving the
+                 * write pointer backwards by three. */
+                fseek(outFile, -2, SEEK_CUR);
+            }
+
             /* Otherwise, write the character to output file. */
             else
             {
@@ -339,5 +361,7 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
 #undef MOUSTACHE_OPEN_CODE
 #undef MOUSTACHE_CLOSE_CODE
 #undef FILE_CODE
+#undef INFO_CODE
+#undef VALUE_CODE
 #undef CODE_DELIMITER
 #undef MOUSTACHE_BUFFER_SIZE
