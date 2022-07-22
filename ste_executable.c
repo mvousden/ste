@@ -64,11 +64,11 @@ int main(const int argc, char** argv)
         /* Copy contents into structures. */
         handleLength = strlen(handle) + 1;
         valStrs[valIndex] = (char*) malloc(handleLength * sizeof(char));
-        strlcpy(valStrs[valIndex], handle, handleLength);
+        ste_strlcpy(valStrs[valIndex], handle, handleLength);
 
         valLength = strlen(value) + 1;
         valVals[valIndex] = (char*) malloc(valLength * sizeof(char));
-        strlcpy(valVals[valIndex], value, valLength);
+        ste_strlcpy(valVals[valIndex], value, valLength);
     }
 
     /* Go go go */

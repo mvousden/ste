@@ -56,7 +56,7 @@ int template_files(const char* inPath, const char* outPath,
         fclose(outFile);
         return 1;
     }
-    strlcpy(inPathCopy, inPath, inPathLength);
+    ste_strlcpy(inPathCopy, inPath, inPathLength);
     dir = dirname(inPathCopy);
 
     /* Use templating engine. */
@@ -270,8 +270,8 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                 moustacheCurrentSize = moustacheBaseSize;
                 for (moustacheIndex = 0; moustacheIndex < moustacheCurrentSize;
                      moustacheBuffer[moustacheIndex++] = 0);
-                strlcpy(moustacheBuffer, dir, moustacheCurrentSize);
-                strlcat(moustacheBuffer, "/", moustacheCurrentSize);
+                ste_strlcpy(moustacheBuffer, dir, moustacheCurrentSize);
+                ste_strlcat(moustacheBuffer, "/", moustacheCurrentSize);
                 moustacheIndex = strlen(dir) + 1;
 
                 /* Remove the previous three characters ('{f:') by moving the
