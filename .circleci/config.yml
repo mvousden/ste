@@ -6,8 +6,9 @@ jobs:
     steps:
       - checkout
       - run: "sudo apt update"
-      - run: "sudo apt install libbsd-dev valgrind"
+      - run: "sudo apt install valgrind"
       - run: "make"
-      - run: ./test.sh
+      - run: ./ste_test.sh
+      - run: ./string_helpers_test
       - store_artifacts:
           path: test_outputs
