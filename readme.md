@@ -91,11 +91,15 @@ language of choice.
 Note that this uses POSIX' basename method to resolve filenames, so if you're
 on Windows, you'll need to code this in yourself, because I have no idea.
 
-Also note that this package uses `strlcat` and `strlcpy`, which are defined in
-`libbsd`.
-
 The included quick-and-dirty test script uses `valgrind`'s `memcheck` tool, so
 you'll probably want to install that if you want to run the tests.
+
+String Helpers
+---
+
+The string helpers source defines some methods otherwise available in libbsd
+used here, which I redefine here for portability and convenience. I can't
+guarantee they'll function identically, but there is a test program!
 
 Gotcha: Nesting and Recursion
 ---
