@@ -51,6 +51,15 @@ Quack quack
 
 ...with no newline at EOF.
 
+If you've cloned this as a git repository, you can also use the moustache:
+
+```
+{{i:}}
+```
+
+to insert versioning information. If not, this moustache will replace with
+"unknown". This functionality is untested.
+
 Note that:
 
  - The `f:` prefix in the moustache tells ste that this moustache refers to a
@@ -58,6 +67,9 @@ Note that:
 
  - The `v:` prefix in the moustache tells ste that this moustache refers to a
    value passed to it by the user.
+
+ - The `i:` prefix in the moustache tells ste that this moustache refers to ste
+   versioning information, defined at compile time.
 
  - Moustaches can't be escaped, but if your moustache doesn't have a code
    (e.g. `f:`), they'll be ignored anyway.
