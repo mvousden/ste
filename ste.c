@@ -282,7 +282,7 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                 ste_strlcat(moustacheBuffer, "/", moustacheCurrentSize);
                 moustacheIndex = strlen(dir) + 1;
 
-                /* Remove the previous three characters ('{f:') by moving the
+                /* Remove the previous three characters ('{{f') by moving the
                  * write pointer backwards by three. */
                 fseek(outFile, -3, SEEK_CUR);
             }
@@ -315,9 +315,9 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                 }
                 while (moustacheIndex > 0);
 
-                /* Remove the previous three characters ('v:') by moving the
+                /* Remove the previous three characters ('{{v') by moving the
                  * write pointer backwards by three. */
-                fseek(outFile, -2, SEEK_CUR);
+                fseek(outFile, -3, SEEK_CUR);
             }
 
             /* Has an info moustache started? */
@@ -329,8 +329,8 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                 /* Enter moustache mode. */
                 moustacheMode = INFO_CODE;
 
-                /* Remove the previous three characters ('i:') by moving the
-                 * write pointer backwards by three. */
+                /* Remove the previous two characters ('i:') by moving the
+                 * write pointer backwards by two. */
                 fseek(outFile, -2, SEEK_CUR);
             }
 
