@@ -7,6 +7,7 @@
 #define INFO_CODE 105  /* 'i' */
 #define VALUE_CODE 118  /* 'v' */
 #define CODE_DELIMITER 58  /* ':', used to delimit all input codes. */
+#define PATH_SEPARATOR 47  /* '/' */
 
 /* Base size for the moustache buffer. The buffer itself is elastic - this is
  * an increment to make sure we don't realloc on every character read. */
@@ -112,6 +113,9 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
     char moustacheMode;  /* Which moustache mode are we in, if any? */
     size_t moustacheIndex;  /* How deep are we into the moustache? */
 
+    /* For dealing with file moustaches. */
+    char pathSep;
+
     /* For dealing with value moustaches. */
     char* valueHandle;
     size_t valueIndex;
@@ -135,6 +139,7 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
     previousChars[1] = 0;
     previousChars[2] = 0;
     thisChar = fgetc(inFile);  /* The first of many (hopefully). */
+    pathSep = (char)PATH_SEPARATOR;
 
     /* Set up the moustache buffer. */
     moustacheCurrentSize = moustacheBaseSize;
@@ -279,7 +284,7 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
                 for (moustacheIndex = 0; moustacheIndex < moustacheCurrentSize;
                      moustacheBuffer[moustacheIndex++] = 0);
                 ste_strlcpy(moustacheBuffer, dir, moustacheCurrentSize);
-                ste_strlcat(moustacheBuffer, "/", moustacheCurrentSize);
+                ste_strlcat(moustacheBuffer, &pathSep, moustacheCurrentSize);
                 moustacheIndex = strlen(dir) + 1;
 
                 /* Remove the previous three characters ('{{f') by moving the
@@ -364,4 +369,5 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
 #undef INFO_CODE
 #undef VALUE_CODE
 #undef CODE_DELIMITER
+#undef PATH_SEPARATOR
 #undef MOUSTACHE_BUFFER_BASE

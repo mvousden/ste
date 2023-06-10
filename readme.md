@@ -101,8 +101,8 @@ C89, but you can compile this library into a shared object for use in your
 language of choice.
 
 Note that this uses POSIX' dirname method to resolve filenames, so if you're on
-Windows, you'll need to code this in yourself, because I have no idea. The file
-separator is also hard-coded in. Sorry about that.
+Windows, you'll need to code this in yourself, because I have no idea. The path
+separator is also hard-coded in via the PATH_SEPARATOR macro. Sorry about that.
 
 The included quick-and-dirty test script uses `valgrind`'s `memcheck` tool, so
 you'll probably want to install that if you want to run the tests.
