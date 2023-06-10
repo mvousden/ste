@@ -364,4 +364,4 @@ int template(FILE* inFile, FILE* outFile, const char* dir,
 #undef INFO_CODE
 #undef VALUE_CODE
 #undef CODE_DELIMITER
-#undef MOUSTACHE_BUFFER_SIZE
+#undef MOUSTACHE_BUFFER_BASE
